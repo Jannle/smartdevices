@@ -1,0 +1,119 @@
+/* === Smartwatch Interview Recruitment Template ===
+   Layout & palette mimic the provided poster.
+   Author: ChatGPT
+*/
+:root{
+  --blue:#2C66A6;
+  --cream:#F4F3F1;
+  --text:#111111;
+  --muted:#6A6A6A;
+  --dot:#2E6CC6;
+  --divider:#D6D6D6;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,'Noto Sans',sans-serif;color:var(--text);background:var(--cream);}
+.wrapper{
+  max-width:980px;
+  margin:0 auto;
+  background:white;
+  box-shadow:0 6px 24px rgba(0,0,0,0.08);
+}
+.header{
+  background:var(--blue);
+  color:white;
+  padding:36px 40px 18px;
+}
+.header h1{
+  margin:0;
+  font-size:56px;
+  line-height:1;
+  letter-spacing:0.5px;
+  font-weight:800;
+}
+.header h2{
+  margin:8px 0 0 2px;
+  font-size:28px;
+  font-weight:700;
+  opacity:0.95;
+}
+.content{
+  display:grid;
+  grid-template-columns: 380px 1fr;
+  gap:24px;
+  padding:28px 40px;
+  background:var(--cream);
+}
+.watch-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px;
+}
+.watch{
+  width:320px;
+  max-width:100%;
+  height:auto;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+}
+.bullets{
+  background:white;
+  border-radius:12px;
+  padding:22px 22px;
+  box-shadow:0 8px 18px rgba(0,0,0,0.06);
+}
+.bullets ul{list-style:none;margin:0;padding:0}
+.bullets li{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  margin:10px 0;
+  font-size:18px;
+}
+.dot{
+  width:8px;height:8px;border-radius:50%;background:var(--dot);margin-top:8px;flex:0 0 8px;
+}
+.info{
+  margin:18px 40px 8px;
+  padding:16px 0;
+  border-top:1px solid var(--divider);
+  border-bottom:1px solid var(--divider);
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:18px 24px;
+}
+.info .label{color:var(--muted);font-weight:600;letter-spacing:0.2px;font-size:14px;margin-bottom:6px}
+.info .value{font-size:18px}
+.footer{
+  background:var(--blue);
+  color:white;
+  display:grid;
+  grid-template-columns: 1fr 200px;
+  gap:16px;
+  padding:18px 40px;
+  align-items:center;
+}
+.footer h3{margin:0 0 6px 0;font-size:18px;letter-spacing:0.3px}
+.contacts{
+  display:flex;gap:28px;flex-wrap:wrap;font-size:16px
+}
+.contact strong{font-weight:700}
+.qr{
+  background:white;
+  padding:6px;
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.qr img{width:160px;height:160px;display:block}
+.small{
+  color:white;
+  opacity:0.9;
+  font-size:14px;
+}
+@media (max-width: 860px){
+  .header h1{font-size:44px}
+  .header h2{font-size:22px}
+  .content{grid-template-columns:1fr}
+  .info{grid-template-columns:1fr}
+  .footer{grid-template-columns:1fr}
+  .qr{justify-self:start}
+}
