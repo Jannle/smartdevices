@@ -1,66 +1,129 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Recruitment – Smartwatch Interview</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>User Research Recruitment</title>
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    body { margin: 0; font-family: sans-serif; background: #f7f7f8; color: #111; }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; text-align: center; }
+    .recruitment-img { width: 100%; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+    .floating-btn { position: fixed; right: 20px; bottom: 20px; padding: 16px 28px; background: #ff5722; color: #fff; border: none; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.18); animation: pulse 1.8s infinite, bounce 3s infinite; }
+    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(255,87,34,.7);}70%{box-shadow:0 0 0 25px rgba(255,87,34,0);}100%{box-shadow:0 0 0 0 rgba(255,87,34,0);} }
+    @keyframes bounce { 0%,20%,50%,80%,100%{transform:translateY(0);}40%{transform:translateY(-6px);}60%{transform:translateY(-3px);} }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; }
+    .modal-content { background: #fff; border-radius: 12px; padding: 20px; max-width: 400px; width: 90%; }
+    .close-btn { float: right; cursor: pointer; }
+    .question { margin: 12px 0; text-align: left; }
+    select, input { width: 100%; padding: 10px; margin-top: 6px; border-radius: 6px; border: 1px solid #ccc; }
+    .form-section { margin-top: 16px; display: none; text-align: center; }
+  </style>
 </head>
 <body>
-  <div class="wrapper">
-    <header class="header">
-      <h1>USER<br>RECRUITMENT</h1>
-      <h2>SMARTWATCH INTERVIEW</h2>
-    </header>
-    <section class="content">
-      <div class="watch-wrap">
-        <img src="watch.svg" alt="Smartwatch" class="watch">
-      </div>
-      <div class="bullets">
-        <ul>
-          <li><span class="dot"></span><span>8 Samsung smartwatch users</span></li>
-          <li><span class="dot"></span><span>4 Whoop users</span></li>
-          <li><span class="dot"></span><span>4 Huawei watch users <em>(previous Samsung users)</em></span></li>
-          <li><span class="dot"></span><span>4 Non-smartwatch users <em>(plan to purchase)</em></span></li>
-        </ul>
-      </div>
-    </section>
-    <section class="info">
-      <div>
-        <div class="label">Topic</div>
-        <div class="value">Feedback on wearable experience &amp; new products</div>
-      </div>
-      <div>
-        <div class="label">Location</div>
-        <div class="value">Gloria Building, Dubai Internet City</div>
-      </div>
-      <div>
-        <div class="label">Duration</div>
-        <div class="value">Around 1 hour</div>
-      </div>
-      <div>
-        <div class="label">Validity</div>
-        <div class="value">07.31 – 08.06</div>
-      </div>
-      <div>
-        <div class="label">Incentive</div>
-        <div class="value">Receive an exquisite gift of 200–700 AED (first come, first served)</div>
-      </div>
-    </section>
-    <footer class="footer">
-      <div>
-        <h3>TO REGISTER</h3>
-        <div class="contacts">
-          <div class="contact"><strong>Hankai</strong> &nbsp; +971&nbsp;528050597</div>
-          <div class="contact"><strong>Ming</strong> &nbsp; +971&nbsp;553904922</div>
-        </div>
-        <div class="small">Scan the QR or WhatsApp us.</div>
-      </div>
-      <div class="qr">
-        <img src="qr.svg" alt="QR code placeholder">
-      </div>
-    </footer>
+  <div class="container">
+    <img src="AK-user-recruiment.jpg" alt="User Research Recruitment" class="recruitment-img">
   </div>
+  <button class="floating-btn" onclick="openModal()">Apply Now</button>
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2>Quick Questions</h2>
+      <form id="eligibilityForm">
+        <div class="question">
+          <label for="brandSelect">What is your device brand?</label>
+          <select id="brandSelect" name="brandSelect">
+            <option value="" selected disabled>Select your brand</option>
+            <option value="huawei">Huawei</option>
+            <option value="samsung">Samsung</option>
+            <option value="other">Other</option>
+          </select>
+          <input type="text" id="brandOther" name="brandOther" placeholder="Please specify your brand" style="display:none;" />
+        </div>
+
+        <div class="question">
+          <label for="modelSelect">What is your device model?</label>
+          <select id="modelSelect" name="modelSelect">
+            <option value="" selected disabled>Select your model</option>
+          </select>
+          <input type="text" id="modelOther" name="modelOther" placeholder="Please specify your model" style="display:none;" />
+        </div>
+
+        <div class="actions">
+          <button type="submit">Submit</button>
+          <button type="button" id="cancelBtn">Cancel</button>
+        </div>
+      </form>
+      <div class="form-section" id="formSection">
+        <h3>Congratulations! You qualify 🎉</h3>
+        <a href="https://forms.gle/your-form-link" target="_blank"><button>Fill in Reservation Form</button></a>
+      </div>
+    </div>
+  </div>
+  <script>
+    const brandSelect = document.getElementById('brandSelect');
+    const brandOther = document.getElementById('brandOther');
+    const modelSelect = document.getElementById('modelSelect');
+    const modelOther = document.getElementById('modelOther');
+    const formSection = document.getElementById('formSection');
+    const form = document.getElementById('eligibilityForm');
+
+    // ====== HOW TO EDIT ======
+    // 1. To add/remove a brand: edit keys in catalog object below.
+    // 2. To add/remove models for a brand: edit the array for that brand.
+    // The code will auto-generate dropdown options and always put 'Other' at the end.
+
+    const catalog = {
+      huawei: ["mate x3", "mate x6"],
+      samsung: ["galaxy z fold4", "galaxy z fold5", "galaxy z fold6"]
+    };
+
+    function openModal(){ document.getElementById('myModal').style.display='flex'; }
+    function closeModal(){ document.getElementById('myModal').style.display='none'; }
+
+    brandSelect.addEventListener('change', () => {
+      if(brandSelect.value === 'other'){
+        brandOther.style.display='block';
+        modelSelect.innerHTML='<option value="other">Other</option>';
+        modelOther.style.display='block';
+      } else if(brandSelect.value){
+        brandOther.style.display='none';
+        modelOther.style.display='none';
+        // populate models and place Other last
+        modelSelect.innerHTML='<option value="" selected disabled>Select your model</option>';
+        catalog[brandSelect.value].forEach(m => {
+          const opt=document.createElement('option');
+          opt.value=m; opt.textContent=m;
+          modelSelect.appendChild(opt);
+        });
+        const otherOpt = document.createElement('option');
+        otherOpt.value='other'; otherOpt.textContent='Other';
+        modelSelect.appendChild(otherOpt);
+      }
+    });
+
+    modelSelect.addEventListener('change', () => {
+      if(modelSelect.value==='other'){
+        modelOther.style.display='block';
+      } else {
+        modelOther.style.display='none';
+      }
+    });
+
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const brandVal = brandSelect.value==='other' ? brandOther.value.trim().toLowerCase() : brandSelect.value;
+      const modelVal = modelSelect.value==='other' ? modelOther.value.trim().toLowerCase() : modelSelect.value;
+      if(!brandVal || !modelVal){
+        alert('Please complete both brand and model');
+        return;
+      }
+      if(catalog[brandSelect.value] && catalog[brandSelect.value].includes(modelVal)){
+        formSection.style.display='block';
+      } else {
+        alert('Sorry, only specific devices qualify for this research.');
+      }
+    });
+  </script>
 </body>
 </html>
