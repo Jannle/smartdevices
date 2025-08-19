@@ -60,7 +60,7 @@
           <label for="brandSelect">What is your device brand?</label>
           <select id="brandSelect" name="brandSelect">
             <option value="" selected disabled>Select your brand</option>
-            <option value="huawei">Huawei</option>
+            <option value="garmin">Garmin</option>
             <option value="samsung">Samsung</option>
             <option value="other">Other</option>
           </select>
@@ -139,8 +139,8 @@
     // 2) 增/减型号：在对应品牌数组里增删（全小写，展示文本按数组原样显示）。
     // 选择具体品牌/型号时不显示填空；选择 Other 才显示手动填写输入框；型号的 Other 始终排在最后。
     const catalog = {
-      huawei: ["mate x3", "mate x6"],
-      samsung: ["galaxy z fold4", "galaxy z fold5", "galaxy z fold6"]
+      garmin: ["Forruuner 165", "vivoactive 6"],
+      samsung: ["galaxy wtch 6", "galaxy watch 7", "galaxy watch 8"]
     };
 
     function openModal(){ document.getElementById('myModal').classList.add('show'); }
