@@ -8,26 +8,51 @@
   <style>
     body { margin: 0; font-family: sans-serif; background: #f7f7f8; color: #111; }
     .container { max-width: 900px; margin: 0 auto; padding: 20px; text-align: center; }
+    .hero-wrap { position: relative; display: inline-block; width: 100%; }
     .recruitment-img { width: 100%; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+    /* Share button on image */
+    .share-btn { position: absolute; top: 12px; right: 12px; padding: 8px 12px; font-size: 14px; border: none; border-radius: 20px; background: rgba(17,17,17,0.75); color: #fff; cursor: pointer; backdrop-filter: blur(4px); }
+    .share-btn:hover { background: rgba(17,17,17,0.9); }
+
     .floating-btn { position: fixed; right: 20px; bottom: 20px; padding: 16px 28px; background: #ff5722; color: #fff; border: none; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.18); animation: pulse 1.8s infinite, bounce 3s infinite; }
     @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(255,87,34,.7);}70%{box-shadow:0 0 0 25px rgba(255,87,34,0);}100%{box-shadow:0 0 0 0 rgba(255,87,34,0);} }
     @keyframes bounce { 0%,20%,50%,80%,100%{transform:translateY(0);}40%{transform:translateY(-6px);}60%{transform:translateY(-3px);} }
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; }
+
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; padding: 10px; }
     .modal-content { background: #fff; border-radius: 12px; padding: 20px; max-width: 400px; width: 90%; }
+    .modal.show { display: flex; }
     .close-btn { float: right; cursor: pointer; }
     .question { margin: 12px 0; text-align: left; }
     select, input { width: 100%; padding: 10px; margin-top: 6px; border-radius: 6px; border: 1px solid #ccc; }
+
     .form-section { margin-top: 16px; display: none; text-align: center; }
+
+    /* Booking iframe modal larger */
+    .modal-content.booking { max-width: 920px; width: 96%; padding: 0; overflow: hidden; }
+    .booking-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid #eee; }
+    .booking-body { width: 100%; height: 70vh; }
+    .booking-body iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+    @media (max-width: 600px){
+      .booking-body { height: 80vh; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="AK-user-recruiment.jpg" alt="User Research Recruitment" class="recruitment-img">
+    <div class="hero-wrap">
+      <img src="AK-user-recruiment.jpg" alt="User Research Recruitment" class="recruitment-img">
+      <button class="share-btn" id="shareBtn">Share</button>
+    </div>
   </div>
+
+  <!-- Floating CTA -->
   <button class="floating-btn" onclick="openModal()">Apply Now</button>
-  <div id="myModal" class="modal">
+
+  <!-- Eligibility Modal -->
+  <div id="myModal" class="modal" aria-hidden="true">
     <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <span class="close-btn" onclick="closeModal()" aria-label="Close">&times;</span>
       <h2>Quick Questions</h2>
       <form id="eligibilityForm">
         <div class="question">
@@ -56,11 +81,28 @@
       </form>
       <div class="form-section" id="formSection">
         <h3>Congratulations! You qualify 🎉</h3>
-        <a href="https://tidycal.com/usersurvey/smrtwatch" target="_blank"><button>Booking your time slot</button></a>
+        <p>Loading booking page...</p>
       </div>
     </div>
   </div>
+
+  <!-- Booking Modal (opens specified page in floating window) -->
+  <div id="bookingModal" class="modal" aria-hidden="true">
+    <div class="modal-content booking">
+      <div class="booking-header">
+        <strong>Book Your Session</strong>
+        <span class="close-btn" onclick="closeBooking()" aria-label="Close">&times;</span>
+      </div>
+      <div class="booking-body">
+        <iframe id="bookingFrame" src="" title="Reservation"></iframe>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ===== Configurable: set your reservation (booking) URL here =====
+    const RESERVATION_URL = 'https://tidycal.com/usersurvey/smrtwatch'; // ← 替换为你的预约网页地址
+
     const brandSelect = document.getElementById('brandSelect');
     const brandOther = document.getElementById('brandOther');
     const modelSelect = document.getElementById('modelSelect');
@@ -69,31 +111,55 @@
     const form = document.getElementById('eligibilityForm');
 
     // ====== HOW TO EDIT ======
-    // 1. To add/remove a brand: edit keys in catalog object below.
-    // 2. To add/remove models for a brand: edit the array for that brand.
-    // The code will auto-generate dropdown options and always put 'Other' at the end.
-
+    // 1) 增/减品牌：修改 catalog 对象的键名（全小写）。
+    // 2) 增/减型号：在对应品牌数组里增删（全小写，展示文本会按原样显示）。
+    // 代码会按所选品牌自动生成型号下拉，并把“Other”固定放在最后；
+    // 选择具体品牌/型号时不显示填空；选择 Other 才显示手动填写输入框。
     const catalog = {
-      garmin: ["Forrunner", "Vivoactive"],
-      samsung: ["Galaxy Watch6", "Galaxy Watch7", "Galaxy Watch8"]
+      garmin: ["Forrunner 165", "Vivoactive 6"],
+      samsung: ["Galaxy watch 6", "Galaxy watch 7", "Galaxy watch 8"]
     };
 
-    function openModal(){ document.getElementById('myModal').style.display='flex'; }
-    function closeModal(){ document.getElementById('myModal').style.display='none'; }
+    function openModal(){ document.getElementById('myModal').classList.add('show'); }
+    function closeModal(){ document.getElementById('myModal').classList.remove('show'); }
+
+    // Share button: use Web Share API if available, fallback to copy link
+    const shareBtn = document.getElementById('shareBtn');
+    shareBtn.addEventListener('click', async () => {
+      const shareData = { title: document.title, text: 'Join our user research', url: location.href };
+      if (navigator.share) {
+        try { await navigator.share(shareData); } catch(e) { /* user canceled */ }
+      } else {
+        try {
+          await navigator.clipboard.writeText(location.href);
+          shareBtn.textContent = 'Link Copied';
+          setTimeout(()=> shareBtn.textContent = 'Share', 1600);
+        } catch(e) {
+          alert('Copy failed, please copy the URL manually.');
+        }
+      }
+    });
 
     brandSelect.addEventListener('change', () => {
       if(brandSelect.value === 'other'){
         brandOther.style.display='block';
-        modelSelect.innerHTML='<option value="other">Other</option>';
+        modelSelect.innerHTML='';
+        // Only show Other for model and require manual input
+        const otherOpt = document.createElement('option');
+        otherOpt.value='other'; otherOpt.textContent='Other';
+        modelSelect.appendChild(otherOpt);
         modelOther.style.display='block';
       } else if(brandSelect.value){
         brandOther.style.display='none';
         modelOther.style.display='none';
         // populate models and place Other last
-        modelSelect.innerHTML='<option value="" selected disabled>Select your model</option>';
-        catalog[brandSelect.value].forEach(m => {
+        modelSelect.innerHTML='';
+        const placeholder = document.createElement('option');
+        placeholder.value=''; placeholder.textContent='Select your model'; placeholder.disabled = true; placeholder.selected = true;
+        modelSelect.appendChild(placeholder);
+        (catalog[brandSelect.value] || []).forEach(m => {
           const opt=document.createElement('option');
-          opt.value=m; opt.textContent=m;
+          opt.value=m; opt.textContent=m; // 展示文本按数组原样
           modelSelect.appendChild(opt);
         });
         const otherOpt = document.createElement('option');
@@ -118,12 +184,33 @@
         alert('Please complete both brand and model');
         return;
       }
-      if(catalog[brandSelect.value] && catalog[brandSelect.value].includes(modelVal)){
+      const isEligible = catalog[brandSelect.value] && catalog[brandSelect.value].includes(modelVal);
+      if(isEligible){
+        // show small success and open booking modal with iframe
         formSection.style.display='block';
+        openBooking();
       } else {
-        alert('Please contact us for register and booking.');
+        alert('Sorry, only specific devices qualify for this research.');
       }
     });
+
+    // Booking modal logic
+    function openBooking(){
+      const booking = document.getElementById('bookingModal');
+      const iframe = document.getElementById('bookingFrame');
+      iframe.src = RESERVATION_URL; // load specified page
+      booking.classList.add('show');
+    }
+    function closeBooking(){
+      const booking = document.getElementById('bookingModal');
+      const iframe = document.getElementById('bookingFrame');
+      booking.classList.remove('show');
+      // optional: unload to stop audio/timers
+      setTimeout(()=> { iframe.src=''; }, 150);
+    }
+
+    // Cancel / close handlers
+    document.getElementById('cancelBtn').addEventListener('click', closeModal);
   </script>
 </body>
 </html>
