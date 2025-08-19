@@ -74,8 +74,8 @@
     // The code will auto-generate dropdown options and always put 'Other' at the end.
 
     const catalog = {
-      huawei: ["mate x3", "mate x6"],
-      samsung: ["galaxy z fold4", "galaxy z fold5", "galaxy z fold6"]
+      Garmin: ["Forrunner", "Vivoactive"],
+      samsung: ["Galaxy Watch6", "Galaxy Watch7", "Galaxy Watch8"]
     };
 
     function openModal(){ document.getElementById('myModal').style.display='flex'; }
@@ -121,7 +121,7 @@
       if(catalog[brandSelect.value] && catalog[brandSelect.value].includes(modelVal)){
         formSection.style.display='block';
       } else {
-        alert('Sorry, only specific devices qualify for this research.');
+        alert('Please contact us for register and booking.');
       }
     });
   </script>
